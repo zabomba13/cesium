@@ -557,8 +557,8 @@ VoxelEllipsoidShape.prototype.update = function (
       const thickness = (shapeMaxHeight - shapeMinHeight) / shapeMaxExtent;
       shaderUniforms.ellipsoidInverseHeightDifferenceUv = 1.0 / thickness;
       shaderUniforms.ellipseInnerRadiiUv = Cartesian2.fromElements(
-        shaderUniforms.ellipsoidRadiiUv.x * (1.0 - thickness),
-        shaderUniforms.ellipsoidRadiiUv.z * (1.0 - thickness),
+        shaderUniforms.ellipsoidRadiiUv.x - thickness,
+        shaderUniforms.ellipsoidRadiiUv.z - thickness,
         shaderUniforms.ellipseInnerRadiiUv
       );
     }

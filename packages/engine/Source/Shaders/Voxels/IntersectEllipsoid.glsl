@@ -120,28 +120,6 @@ vec4 intersectFlippedWedge(Ray ray, float minAngle, float maxAngle)
     return vec4(planeIntersectMin, planeIntersectMax);
 }
 
-vec2 intersectUnitSphere(Ray ray)
-{
-    vec3 o = ray.pos;
-    vec3 d = ray.dir;
-
-    float b = dot(d, o);
-    float c = dot(o, o) - 1.0;
-    float det = b * b - c;
-
-    if (det < 0.0) {
-        return vec2(NO_HIT);
-    }
-
-    det = sqrt(det);
-    float t1 = -b - det;
-    float t2 = -b + det;
-    float tmin = min(t1, t2);
-    float tmax = max(t1, t2);
-
-    return vec2(tmin, tmax);
-}
-
 vec2 intersectUnitSphereUnnormalizedDirection(Ray ray)
 {
     vec3 o = ray.pos;
@@ -157,10 +135,8 @@ vec2 intersectUnitSphereUnnormalizedDirection(Ray ray)
     }
 
     det = sqrt(det);
-    float t1 = (-b - det) / a;
-    float t2 = (-b + det) / a;
-    float tmin = min(t1, t2);
-    float tmax = max(t1, t2);
+    float tmin = (-b - det) / a;
+    float tmax = (-b + det) / a;
 
     return vec2(tmin, tmax);
 }
@@ -272,7 +248,8 @@ void intersectShape(in Ray ray, inout Intersections ix) {
         setIntersection(ix, 2, outerIntersect.y, false, false); // negative, exit
         setIntersection(ix, 3, outerIntersect.y, true, false);  // positive, exit
     #elif defined(ELLIPSOID_HAS_RENDER_BOUNDS_HEIGHT_MIN)
-        Ray innerRay = Ray(ray.pos * u_ellipsoidInverseInnerScaleUv, ray.dir * u_ellipsoidInverseInnerScaleUv);
+        vec3 inverseInnerRadiiScale = u_ellipsoidRadiiUv / vec3(u_ellipseInnerRadiiUv.x, u_ellipseInnerRadiiUv.x, u_ellipseInnerRadiiUv.y);
+        Ray innerRay = Ray(ray.pos * inverseInnerRadiiScale, ray.dir * inverseInnerRadiiScale);
         vec2 innerIntersect = intersectUnitSphereUnnormalizedDirection(innerRay);
 
         if (innerIntersect == vec2(NO_HIT)) {
