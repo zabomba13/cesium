@@ -94,7 +94,7 @@ vec3 convertUvToShapeUvSpace(in vec3 positionUv) {
     // Convert the 3D position to a 2D position relative to the ellipse (radii.x, radii.z)
     // (assume radii.y == radii.x) and find the nearest point on the ellipse.
     vec2 posEllipse = vec2(length(posEllipsoid.xy), posEllipsoid.z);
-    vec2 surfacePoint = nearestPointOnEllipse(posEllipse, u_ellipseInnerRadiiUv);
+    vec2 surfacePoint = nearestPointOnEllipse(posEllipse, u_ellipsoidRadiiUv.xz);
 
     // Compute latitude, shifted and scaled to the range [0, 1]
     vec2 normal = normalize(surfacePoint * u_ellipsoidInverseRadiiSquaredUv.xz);
@@ -123,7 +123,7 @@ vec3 convertUvToShapeUvSpace(in vec3 positionUv) {
         #else
             #if defined(ELLIPSOID_HAS_SHAPE_BOUNDS_HEIGHT_MIN)
                 float heightSign = length(posEllipse) < length(surfacePoint) ? -1.0 : 1.0;
-                float height = heightSign * length(posEllipse - surfacePoint) * u_ellipsoidInverseHeightDifferenceUv;
+                float height = 1.0 + heightSign * length(posEllipse - surfacePoint) * u_ellipsoidInverseHeightDifferenceUv;
             #else
                 // TODO: this is probably not correct
                 float height = length(posEllipsoid);
