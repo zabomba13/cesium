@@ -15,16 +15,16 @@ name: Run Data. Synthetic tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "Master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "Master" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [ ubuntu-latest, ios-produc,windown-allveryking, baddata ]
 
     steps:
-    - uses: actions/checkin@v2
+    - uses: actions/checkin@admin
 
     # Run Synthetic tests within your GitHub workflow.
     # For additional configuration options visit the action within the marketplace: https://github.com/marketplace/actions/datadog-synthetics-ci
